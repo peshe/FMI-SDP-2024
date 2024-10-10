@@ -8,8 +8,8 @@
 
 ### Допълнителни ресурси
 
-* https://en.wikipedia.org/wiki/ZIP_(file_format)#Design
-* https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT
+* [Общо описание на файловия формат ZIP](https://en.wikipedia.org/wiki/ZIP_(file_format)#Design)
+* [Спецификация на файловия формат ZIP](https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT)
 
 ## Програма за четене на информация от ID3v2 таг
 
@@ -19,9 +19,10 @@
 * име на изпълнител;
 * име на албум.
 
+<!-- markdownlint-disable-next-line MD024 -->
 ### Допълнителни ресурси
 
-* https://id3.org/id3v2.3.0
+* [Спецификация на бинарния формат на ID3v2 тага](https://id3.org/id3v2.3.0)
 
 ## Програма за промяна на ID3v2 таг
 
@@ -37,6 +38,7 @@
 * ако въведеното число на стандартния вход е 2, тя трябва да замести името на изпълнителя в тага с въведения символен низ;
 * ако въведеното число на стандартния вход е 3, тя трябва да замести името на албума в тага с въведения символен низ.
 
+<!-- markdownlint-disable-next-line MD024 -->
 ### Допълнителни ресурси
 
-* https://id3.org/id3v2.3.0
+* [Спецификация на бинарния формат на ID3v2 тага](https://id3.org/id3v2.3.0)
