@@ -73,11 +73,13 @@ public:
   void serialize(std::ofstream &file) final {
     std::size_t name_length = name.size();
 
-    file.write(reinterpret_cast<const char *>(&name_length), sizeof(std::size_t));
+    file.write(reinterpret_cast<const char *>(&name_length),
+               sizeof(std::size_t));
     file.write(name.c_str(), name_length);
 
     std::size_t books_length = books.size();
-    file.write(reinterpret_cast<const char *>(&books_length), sizeof(std::size_t));
+    file.write(reinterpret_cast<const char *>(&books_length),
+               sizeof(std::size_t));
 
     for (Book &book : books) {
       book.serialize(file);
@@ -88,13 +90,13 @@ public:
     std::size_t name_size;
     file.read(reinterpret_cast<char *>(&name_size), sizeof(std::size_t));
 
-		name.resize(name_size);
+    name.resize(name_size);
     file.read(name.data(), name_size);
 
     std::size_t book_size;
     file.read(reinterpret_cast<char *>(&book_size), sizeof(std::size_t));
 
-		books.resize(book_size);
+    books.resize(book_size);
     for (size_t i = 0; i < book_size; i++) {
       books[i].deserialize(file);
     }
@@ -106,11 +108,11 @@ public:
 
   const std::string &get_name() const noexcept { return name; }
 
-	void print() const noexcept {
-		for (const Book& book : books) {
-			book.print();
-		}
-	}
+  void print() const noexcept {
+    for (const Book &book : books) {
+      book.print();
+    }
+  }
 
 private:
   std::string name;
@@ -118,27 +120,27 @@ private:
 };
 
 int main() {
-	Library library("FMI");
+  Library library("FMI");
   Book book("LOTR", "Tolkien", 5);
   Book next("Hobbit", "Tolkien", 7);
 
-	library.add(book);
-	library.add(next);
+  library.add(book);
+  library.add(next);
 
   std::ofstream os("lib.bin", std::ios::binary);
-	
-	library.serialize(os);
 
-	os.close();
+  library.serialize(os);
+
+  os.close();
 
   std::ifstream is("lib.bin", std::ios::binary);
-	
-	Library copy("Copy");
-	copy.deserialize(is);
 
-	is.close();
+  Library copy("Copy");
+  copy.deserialize(is);
 
-	copy.print();
+  is.close();
+
+  copy.print();
 
   return 0;
 }
