@@ -123,7 +123,7 @@ ADH
 
 ---
 
-#### Задача 6: [Генериране на подмножества](https://leetcode.com/problems/ambiguous-coordinates/description/?envType=problem-list-v2&envId=backtracking)
+#### Задача 6: [Генериране на подмножества](https://leetcode.com/problems/subsets/description/?envType=problem-list-v2&envId=backtracking)
 
 ### Задачи за упражнение вкъщи
 
