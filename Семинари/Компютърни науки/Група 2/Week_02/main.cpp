@@ -6,10 +6,9 @@
 #include "t_name.h"
 
 int main() {
-	// работи с различни контейнери
+	// works with different containers
 	const Vector<int> v{1,2,3,4};
-	Vector<int> s{1,3,2,4};
-	Vector<int> l{5,6,7,8,9};
+	std::vector<int> l{5,6,7,8,9};
 	
 	// print v
 	for (auto& x : v) {

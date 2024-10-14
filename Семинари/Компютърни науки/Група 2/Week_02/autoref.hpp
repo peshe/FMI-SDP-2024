@@ -5,6 +5,7 @@
 
 template <typename T>
 struct AutoRef {
+	// a reference if possible or a owned object otherwise
 	T ref;
 
 	template <class Q>
