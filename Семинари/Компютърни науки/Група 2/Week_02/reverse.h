@@ -1,46 +1,73 @@
 #pragma once
 
 #include <utility>
+#include "autoref.hpp"
+
 template <class T>
 class Reverse {
-	T ref;
+	AutoRef<T> ref;
 
    public:
 	template <class Q>
-	Reverse(Q &ref) : ref(ref) {}
-	template <class Q>
-	Reverse(Q &&ref) : ref(std::move(ref)) {}
+	Reverse(Q &&ref) : ref(std::forward<Q>(ref)) {}
+
+	std::size_t size() const { return ref->size(); }
+
+	auto begin() { return Iterator(ref->end() - 1); }
+	auto end() { return Iterator(ref->begin() - 1); }
 
 	template <class It>
-	class Iterator : public It {
-		Iterator(It it) : It(it) {}
-		Iterator(It &&it) : It(it) {}
+	class Iterator  {
+		It it;
+		Iterator(It &&it) : it(it) {}
+		Iterator(It &it) : it(it) {}
+
 	   public:
 		inline Iterator &operator++() {
-			this->It::operator--();
+			--it;
 			return *this;
 		}
 		inline Iterator operator++(int) {
-			this->It::operator--(0);
-			return *this;
+			Iterator res(*this);
+			--it;
+			return res;
 		}
 		inline Iterator &operator--() {
-			this->It::operator++();
+			++it;
 			return *this;
 		}
 		inline Iterator operator--(int) {
-			this->It::operator++(0);
+			Iterator res(*this);
+			++it;
+			return res;
+		}
+		inline Iterator operator+(int n) const {
+			Iterator res(*this);
+			res.it -= n;
+			return res;
+		}
+		inline Iterator operator-(int n) const {
+			Iterator res(*this);
+			res.it += n;
+			return res;
+		}
+		inline Iterator &operator+=(int n) {
+			it -= n;
 			return *this;
 		}
+		inline Iterator &operator-=(int n) {
+			it += n;
+			return *this;
+		}
+
+		inline auto& operator*() {
+			return *it;
+		}
+		inline bool operator!=(Iterator other) const { return it != other.it; }
+		inline bool operator==(Iterator other) const { return it == other.it; }
 		friend class Reverse<T>;
 	};
-
-	auto begin() { return Iterator(--ref.end()); }
-	auto end() { return Iterator(--ref.begin()); }
 };
-
-template <class Q>
-Reverse(Q &) -> Reverse<Q &>;
 
 template <class Q>
 Reverse(Q &&) -> Reverse<Q>;

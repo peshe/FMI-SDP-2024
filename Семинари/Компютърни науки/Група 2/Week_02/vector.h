@@ -29,43 +29,61 @@ class Vector {
 	void push_back(T &&value);
 	void push_back(const T &value);
 
-	void pop_back();
-	std::size_t size() const {return Size;}
+	void		pop_back();
+	std::size_t size() const { return Size; }
 
-
-	class Iterator {
+	template<class Container, class Element>
+	class IteratorBase {
 	   protected:
-		Vector<T>  *v;
+		Container  *v;
 		std::size_t index;
-		Iterator(Vector<T> *v, std::size_t index) : v(v), index(index) {}
+		IteratorBase(Container *v, std::size_t index) : v(v), index(index) {}
 
 	   public:
-		inline Iterator &operator++();
-		inline Iterator	 operator++(int);
-		inline Iterator &operator--();
-		inline Iterator	 operator--(int);
-		inline T		&operator*() { return (*v)[index]; }
-		inline bool		 operator!=(Iterator other) const { return index != other.index || v != other.v; }
-		inline bool		 operator==(Iterator other) const { return index == other.index && v == other.v; }
+		IteratorBase &operator++() {
+			++this->index;
+			return *this;
+		}
+		IteratorBase operator++(int) {
+			IteratorBase res = *this;
+			this->operator++();
+			return res;
+		}
+		IteratorBase &operator--() {
+			--this->index;
+			return *this;
+		}
+		IteratorBase operator--(int) {
+			IteratorBase res = *this;
+			this->operator--();
+			return res;
+		}
+		inline IteratorBase &operator+=(int n) {
+			index += n;
+			return *this;
+		}
+		inline IteratorBase &operator-=(int n) {
+			index -= n;
+			return *this;
+		}
+		inline IteratorBase operator+(int n) {
+			IteratorBase res(*this);
+			res += n;
+			return res;
+		}
+		inline IteratorBase operator-(int n) {
+			IteratorBase res(*this);
+			res -= n;
+			return res;
+		}
+		inline Element   &operator*() { return (*v)[index]; }
+		inline bool operator!=(IteratorBase other) const { return index != other.index || v != other.v; }
+		inline bool operator==(IteratorBase other) const { return index == other.index && v == other.v; }
 		friend class Vector<T>;
 	};
 
-	class ConstIterator {
-	   protected:
-		const Vector<T> *v;
-		std::size_t		 index;
-		ConstIterator(const Vector<T> *v, std::size_t index) : v(v), index(index) {}
-
-	   public:
-		inline ConstIterator &operator++();
-		inline ConstIterator  operator++(int);
-		inline ConstIterator &operator--();
-		inline ConstIterator  operator--(int);
-		inline const T		 &operator*() { return (*v)[index]; }
-		inline bool			  operator!=(ConstIterator other) const { return index != other.index || v != other.v; }
-		inline bool			  operator==(ConstIterator other) const { return index == other.index && v == other.v; }
-		friend class Vector<T>;
-	};
+	using Iterator = IteratorBase<Vector<T>, T>;
+	using ConstIterator = IteratorBase<const Vector<T>, const T>;
 
 	Iterator	  begin() { return Iterator(this, 0); }
 	Iterator	  end() { return Iterator(this, Size); };
@@ -90,23 +108,19 @@ Vector<T>::Vector(const Vector &other) : Capacity(other.Capacity), Size(other.Si
 	for (std::size_t i = 0; i < this->Size; ++i) {
 		Arr[i] = other.Arr[i];
 	}
-	std::cout << "copy constructor" << std::endl;
 }
 template <class T>
 Vector<T>::Vector(Vector &&other) : Capacity(other.Capacity), Size(other.Size), Arr(other.Arr) {
 	other.Capacity = 0;
 	other.Size	   = 0;
 	other.Arr	   = nullptr;
-	std::cout << "move constructor" << std::endl;
 }
 
 template <class T>
-Vector<T>::Vector(std::initializer_list<T> other)
-	: Capacity(other.size()), Size(0), Arr(new T[other.size()]) {
+Vector<T>::Vector(std::initializer_list<T> other) : Capacity(other.size()), Size(0), Arr(new T[other.size()]) {
 	for (auto t : other) {
 		push_back(t);
 	}
-	std::cout << "{} constructor" << std::endl;
 }
 
 template <class T>
@@ -182,52 +196,4 @@ template <class T>
 void Vector<T>::pop_back() {
 	assert(Size > 0);
 	--Size;
-}
-
-template <class T>
-typename Vector<T>::Iterator &Vector<T>::Iterator::operator++() {
-	++this->index;
-	return *this;
-}
-template <class T>
-typename Vector<T>::Iterator Vector<T>::Iterator::operator++(int) {
-	Iterator res = *this;
-	this->operator++();
-	return res;
-}
-
-template <class T>
-typename Vector<T>::Iterator &Vector<T>::Iterator::operator--() {
-	--this->index;
-	return *this;
-}
-template <class T>
-typename Vector<T>::Iterator Vector<T>::Iterator::operator--(int) {
-	Iterator res = *this;
-	this->operator--();
-	return res;
-}
-
-template <class T>
-typename Vector<T>::ConstIterator &Vector<T>::ConstIterator::operator++() {
-	++this->index;
-	return *this;
-}
-template <class T>
-typename Vector<T>::ConstIterator Vector<T>::ConstIterator::operator++(int) {
-	ConstIterator res = *this;
-	this->operator++();
-	return res;
-}
-
-template <class T>
-typename Vector<T>::ConstIterator &Vector<T>::ConstIterator::operator--() {
-	--this->index;
-	return *this;
-}
-template <class T>
-typename Vector<T>::ConstIterator Vector<T>::ConstIterator::operator--(int) {
-	ConstIterator res = *this;
-	this->operator--();
-	return res;
 }
