@@ -95,8 +95,8 @@ ABC
 ACB
 BAC
 BCA
-CAB
 CBA
+CAB
 ```
 
 ---
