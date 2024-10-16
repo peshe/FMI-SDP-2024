@@ -9,7 +9,7 @@ void swap(T &x, T &y)
 }
 
 // функцията не е шаблонна, тъй като в нея вътрешно се използват методите на `std::string`
-void power_set_helper(std::string &a, size_t i)
+void permutations_helper(std::string &a, size_t i)
 {
     if (i == a.length() - 1)
     {
@@ -20,14 +20,14 @@ void power_set_helper(std::string &a, size_t i)
     for (size_t j = i; j < a.length(); j++)
     {
         swap(a[i], a[j]);
-        power_set_helper(a, i + 1);
+        permutations_helper(a, i + 1);
         swap(a[i], a[j]);
     }
 }
 
-void power_set(std::string &a)
+void permutations(std::string &a)
 {
-    power_set_helper(a, 0);
+    permutations_helper(a, 0);
 }
 
 int main()
@@ -40,7 +40,7 @@ int main()
         return 1;
     }
 
-    power_set(a);
+    permutations(a);
 
     return 0;
 }
