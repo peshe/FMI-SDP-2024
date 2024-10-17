@@ -3,7 +3,7 @@
 template <typename T>
 void swap(T &x, T &y)
 {
-    T a = x;
+    auto a = x;
     x = y;
     y = a;
 }
@@ -17,7 +17,7 @@ void permutations_helper(std::string &a, size_t i)
         return;
     }
 
-    for (size_t j = i; j < a.length(); j++)
+    for (auto j = i; j < a.length(); j++)
     {
         swap(a[i], a[j]);
         permutations_helper(a, i + 1);
