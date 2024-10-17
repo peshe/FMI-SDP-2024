@@ -14,7 +14,7 @@ class Stack
         }
         int pop()
         {
-            return arr[size--];
+            return arr[--size];
         }
         int top()
         {
