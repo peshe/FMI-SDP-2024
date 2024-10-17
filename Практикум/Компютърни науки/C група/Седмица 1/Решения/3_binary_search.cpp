@@ -57,7 +57,7 @@ int main()
         return 4;
     }
 
-    std::cout << binary_search(a, n, x);
+    std::cout << binary_search(a, n, x) << std::endl;
 
     delete[] a;
 

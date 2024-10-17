@@ -23,6 +23,6 @@ int main()
     return 2;
   }
 
-  std::cout << factorial(n);
+  std::cout << factorial(n) << std::endl;
   return 0;
 }
