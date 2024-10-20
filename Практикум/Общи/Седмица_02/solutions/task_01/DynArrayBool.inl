@@ -4,7 +4,7 @@
 template<class Allocator>
 class DynArray<bool, Allocator> {
 private:
-    static const int BYTE_SIZE = 8;
+    static constexpr size_t BYTE_SIZE = 8;
 public:
 ////
 // Class life-cycle members
@@ -54,6 +54,9 @@ public:
     // Removes an element at given position
     void remove(size_t index);
 
+    // Checks if an element exists in the array.
+    bool contains(bool elem) const;
+
     // Returns a copy of the element at a given position.
     bool get(size_t index) const;
 
@@ -78,12 +81,13 @@ public:
 ////
 // Access operators and iterators
 
-    // An indexing operators
-    const bool &operator[](size_t index) const;
+    // indexing operators
+    bool operator[](size_t index) const;
 
     bool &operator[](size_t index);
 
 // TODO: Add iterator
+
 private:
     char *data;
     size_t size;
@@ -92,19 +96,25 @@ private:
 
 private:
     // Calculates the size in bytes needed for n boolean values
-    size_t getByteCount(size_t n) const;
+    static size_t getByteCount(size_t n);
 
     // Calculates the byte position for a given position
-    size_t getBytePosition(size_t position) const;
+    static size_t getBytePosition(size_t position);
 
     // Calculates the bit position in a byte for a given position in the array
-    size_t getBitPosition(size_t position) const;
+    static size_t getBitPosition(size_t position);
 
     // Sets the bit value at given position in char c
-    void setBit(char &c, int position, bool value);
+    static void setBit(char &c, size_t position, bool value);
+
+    // No boundary checks - internal use only!
+    void set(size_t position, bool value);
 
     // Gets the bit at position in a given char
-    bool getBit(char c, int position) const;
+    static bool getBit(char c, size_t position);
+
+    // No boundary checks - internal use only!
+    bool getUnchecked(size_t position) const;
 
     // ensures there are enough space for given number of elements
     // Should be the same
@@ -114,30 +124,33 @@ private:
     void resize(size_t newCapacity);
 };
 
+typedef DynArray<bool, DefaultAllocator<char>> DynArrayBool;
+
 
 // ///////////////
 // Implementations
 // ///////////////
 template<class Allocator>
-size_t DynArray<bool, Allocator>::getByteCount(size_t n) const {
-    if (n % BYTE_SIZE == 0) {
-        return n / BYTE_SIZE;
-    }
-    return n / BYTE_SIZE + 1;
+// static
+inline size_t DynArray<bool, Allocator>::getByteCount(size_t n) {
+    return n / BYTE_SIZE + (n % BYTE_SIZE != 0);
 }
 
 template<class Allocator>
-size_t DynArray<bool, Allocator>::getBytePosition(size_t position) const {
+// static
+inline size_t DynArray<bool, Allocator>::getBytePosition(size_t position) {
     return position / BYTE_SIZE;
 }
 
 template<class Allocator>
-size_t DynArray<bool, Allocator>::getBitPosition(size_t position) const {
+// static
+inline size_t DynArray<bool, Allocator>::getBitPosition(size_t position) {
     return position % BYTE_SIZE;
 }
 
 template<class Allocator>
-void DynArray<bool, Allocator>::setBit(char &c, int position, bool value) {
+// static
+inline void DynArray<bool, Allocator>::setBit(char &c, size_t position, bool value) {
     if (value)
         c |= 1 << position;
     else
@@ -145,8 +158,19 @@ void DynArray<bool, Allocator>::setBit(char &c, int position, bool value) {
 }
 
 template<class Allocator>
-bool DynArray<bool, Allocator>::getBit(char c, int position) const {
+inline void DynArray<bool, Allocator>::set(size_t position, bool value) {
+    setBit(data[getBytePosition(position)], getBitPosition(position), value);
+}
+
+template<class Allocator>
+// static
+inline bool DynArray<bool, Allocator>::getBit(char c, size_t position) {
     return c >> position & 1;
+}
+
+template<class Allocator>
+inline bool DynArray<bool, Allocator>::getUnchecked(size_t position) const {
+    return getBit(data[getBytePosition(position)], getBitPosition(position));
 }
 
 template<class Allocator>
@@ -179,7 +203,15 @@ inline DynArray<bool, Allocator>::DynArray(const DynArray &other)
     }
     catch (...) {
         allocator.freeArr(data);
+        throw;
     }
+}
+
+template <class Allocator>
+inline DynArray<bool, Allocator>::DynArray(DynArray &&other)
+        : data(nullptr), size(other.getSize()), capacity(other.getCapacity()) {
+    std::swap(data, other.data);
+    allocator.swap(other.allocator);
 }
 
 template<class Allocator>
@@ -190,9 +222,20 @@ inline DynArray<bool, Allocator> &DynArray<bool, Allocator>::operator=(const Dyn
             clear();
             ensureSize(other.getCapacity());
         }
-        for (std::size_t i = 0; i < getByteCount(other.size); ++i) {
+        for (size_t i = 0; i < getByteCount(other.size); ++i) {
             data[i] = other[i];
         }
+    }
+    return *this;
+}
+
+template <class Allocator>
+inline DynArray<bool, Allocator> &DynArray<bool, Allocator>::operator=(DynArray<bool, Allocator> &&other) {
+    if (this != &other) {
+        std::swap(data, other.data);
+        std::swap(size, other.size);
+        std::swap(capacity, other.capacity);
+        allocator.swap(other.allocator);
     }
     return *this;
 }
@@ -201,23 +244,47 @@ template<class Allocator>
 template<class OtherType, class __>
 inline DynArray<bool, Allocator>::DynArray(const DynArray<OtherType, __> &other)
         : data(nullptr), size(other.getSize()), capacity(other.getCapacity()) {
-    throw "Not implemented";
-    // TODO: Implement
+    capacity = capacity ? capacity : 1;
+    data = allocator.allocArr(getByteCount(capacity));
+    try {
+        for (size_t i = 0; i < size; ++i) {
+            set(i, bool(other[i]));
+        }
+    }
+    catch (...) {
+        allocator.freeArr(data);
+        throw;
+    }
 }
 
 template<class Allocator>
 template<class OtherType, class __>
 inline DynArray<bool, Allocator> &DynArray<bool, Allocator>::operator=(const DynArray<OtherType, __> &other) {
-    throw "Not implemented";
-    // TODO: Implement
+    //In that case two objects have different types, so
+    //no need to check for self-assignment
+    size = other.getSize();
+    if (capacity < other.getSize()) {
+        clear();
+        ensureSize(other.getSize());
+    }
+
+    for (size_t i = 0; i < other.getSize(); ++i) {
+        set(i, bool(other[i]));
+    }
+
+    return *this;
 }
 
 // In that case we do not need function to append vector of the same type
 template<class Allocator>
 template<class OtherType, class __>
 inline DynArray<bool, Allocator> &DynArray<bool, Allocator>::operator+=(const DynArray<OtherType, __> &other) {
-    throw "Not implemented";
-    // TODO: Implement
+    ensureSize(size + other.getSize());
+    for (size_t i = 0; i < other.getSize(); ++i) {
+        set(size + i, bool(other[i]));
+    }
+    size += other.getSize();
+    return *this;
 }
 
 
@@ -232,7 +299,7 @@ inline DynArray<bool, Allocator> &DynArray<bool, Allocator>::operator+=(bool ele
 template<class Allocator>
 inline void DynArray<bool, Allocator>::append(bool elem) {
     ensureSize(size + 1);
-    setBit(data[getBytePosition(size)], getBitPosition(size), elem);
+    set(size, elem);
     ++size;
 }
 
@@ -264,12 +331,11 @@ inline void DynArray<bool, Allocator>::clear() {
 template<class Allocator>
 inline bool DynArray<bool, Allocator>::get(size_t index) const {
     if (index < size) {
-        return getBit(data[getBytePosition(index)], getBitPosition(index));
+        return getUnchecked(index);
     }
 
-    // In this implementation the method is designed to return
-    //default-constructed element in case of out-of-range access
-    return bool();
+    // In this implementation the method is designed to return false in case of out-of-range access
+    return false;
 }
 
 
@@ -281,23 +347,34 @@ inline void DynArray<bool, Allocator>::remove(size_t index) {
     }
 
     for (size_t i = index; i < size - 1; ++i) {
-        setBit(data[getBytePosition(i)], getBitPosition(i),
-               getBit(data[getBytePosition(i + 1)], getBitPosition(i + 1)));
+        set(i, getUnchecked(i + 1));
     }
     --size;
 }
 
+template <class Allocator>
+inline bool DynArray<bool, Allocator>::contains(bool elem) const
+{
+    for (size_t i = 0; i < size; ++i) {
+        if (elem == getUnchecked(i)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 template<class Allocator>
-inline const bool &DynArray<bool, Allocator>::operator[](size_t index) const {
-    if (index < size) return getBit(data[getBytePosition(index)], getBitPosition(index));
+inline bool DynArray<bool, Allocator>::operator[](size_t index) const {
+    if (index < size) return getUnchecked(index);
     throw std::invalid_argument("Illegal index");
 }
 
 
 template<class Allocator>
 inline bool &DynArray<bool, Allocator>::operator[](size_t index) {
-    if (index < size) return getBit(data[getBytePosition(index)], getBitPosition(index));
-    throw std::invalid_argument("Illegal index");
+    throw "Not implemented: DynArray<bool, Allocator>::operator[]";
+    // Some magic is needed in order to implement this - see `BoolVectorProxy` in
+    // https://github.com/peshe/FMI-SDP-2024/blob/926454bdac468089b51f90b7db291400166a84db/%D0%A1%D0%B5%D0%BC%D0%B8%D0%BD%D0%B0%D1%80%D0%B8/%D0%9A%D0%BE%D0%BC%D0%BF%D1%8E%D1%82%D1%8A%D1%80%D0%BD%D0%B8%20%D0%BD%D0%B0%D1%83%D0%BA%D0%B8/%D0%93%D1%80%D1%83%D0%BF%D0%B0%202/Week_03/boolvector.hpp#L10-L24.
 }
 
 
@@ -351,4 +428,4 @@ operator+(const DynArray<bool, Allocator1> &array, const DynArray<OtherType, All
     return DynArray<bool, Allocator1>(array) += other;
 }
 
-#endif
+#endif // DYN_ARRAY_BOOL
