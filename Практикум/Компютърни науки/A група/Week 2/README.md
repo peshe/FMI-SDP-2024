@@ -99,7 +99,7 @@ false
 **Обяснение:**
 
 ```
-CombinationIterator itr = new CombinationIterator("abc", 2);
+CombinationIterator itr("abc", 2);
 itr.next();    // връща "ab"
 itr.hasNext(); // връща true
 itr.next();    // връща "ac"
