@@ -1,7 +1,7 @@
 #include <iostream>
 
 template <typename T>
-int binary_search_helper(T a[], T x, unsigned int l, unsigned int r)
+int binary_search(T a[], T x, unsigned int l, unsigned int r)
 {
     if (l == r)
         return -1;
@@ -10,14 +10,14 @@ int binary_search_helper(T a[], T x, unsigned int l, unsigned int r)
     if (x == a[m])
         return m;
     if (x < a[m])
-        return binary_search_helper(a, x, l, m - 1);
-    return binary_search_helper(a, x, m + 1, r);
+        return binary_search(a, x, l, m - 1);
+    return binary_search(a, x, m + 1, r);
 }
 
 template <typename T>
 int binary_search(T a[], unsigned int n, T x)
 {
-    return binary_search_helper(a, x, 0, n - 1);
+    return binary_search(a, x, 0, n - 1);
 }
 
 int main()

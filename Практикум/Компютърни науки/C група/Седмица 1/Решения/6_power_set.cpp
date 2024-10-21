@@ -1,7 +1,7 @@
 #include <iostream>
 
 // функцията не е шаблонна, тъй като в нея вътрешно се използват методите на `std::string`
-void power_set_helper(std::string s, std::string &processed)
+void power_set(std::string s, std::string &processed)
 {
     if (s.empty())
     {
@@ -11,16 +11,16 @@ void power_set_helper(std::string s, std::string &processed)
 
     auto elem = s[0];
     s.erase(s.begin());
-    power_set_helper(s, processed);
+    power_set(s, processed);
     processed.push_back(elem);
-    power_set_helper(s, processed);
+    power_set(s, processed);
     processed.pop_back();
 }
 
 void power_set(const std::string &s)
 {
     std::string processed;
-    power_set_helper(s, processed);
+    power_set(s, processed);
 }
 
 int main()
