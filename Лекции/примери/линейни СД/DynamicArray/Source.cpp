@@ -16,7 +16,7 @@ using std::cout;
 
 using namespace fmi::sdp;
 
-int main()
+void testAllocators()
 {
     using intAlloc = DebugCountAllocator<int>;
     using shortAlloc = DebugCountAllocator<short>;
@@ -74,10 +74,6 @@ int main()
     }
     cout << endl;
 
-// test the clear method
-    intArray.clear();
-    assert(intArray.isEmpty());
-
 // copy ctor test with different types
     DynArray<float, floatAlloc> testArray(shortArray);
     cout << testArray[5] << endl;
@@ -96,15 +92,23 @@ int main()
 
 // copy ctor with same type and operator + with different types
     DynArray<int, intAlloc> big = intArray + shortArray;
-    cout << big.getSize() << endl;
+    cout << intArray.getSize() << ' ' << shortArray.getSize() << ' ' << big.getSize() << endl;
 
     big += 'a';
     cout << big[big.getSize() - 1] << endl;
+
+// test the clear method
+    intArray.clear();
+    assert(intArray.isEmpty());
 
 // assignment the same types
     intArray = big;
     cout << intArray[big.getSize() - 1] << endl;
     cout << big[big.getSize() - 1] << endl;
+}
 
+int main()
+{
+    testAllocators();
     return 0;
 }
