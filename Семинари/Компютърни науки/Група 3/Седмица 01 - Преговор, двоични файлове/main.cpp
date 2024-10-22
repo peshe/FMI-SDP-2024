@@ -42,7 +42,7 @@ bool knight_traversal(unsigned n, int start_x, int start_y,
                       int end_x, int end_y) {
   bool **board = new bool *[n];
   for (int i = 0; i < n; ++i) {
-    board[i] = new bool[n];
+    board[i] = new bool[n]{};
   }
 
   bool result = knight_traversal_helper(board, n, start_x, start_y, end_x, end_y);
