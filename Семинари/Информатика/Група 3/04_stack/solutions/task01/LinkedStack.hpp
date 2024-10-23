@@ -47,6 +47,7 @@ public:
         }
         newBox->next = this->head;
         this->head = newBox;
+        this->size++;
     }
 
     void pop() {
