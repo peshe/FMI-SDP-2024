@@ -23,6 +23,6 @@ int main()
     return 2;
   }
 
-  std::cout << fibonacci(n);
+  std::cout << fibonacci(n) << std::endl;
   return 0;
 }

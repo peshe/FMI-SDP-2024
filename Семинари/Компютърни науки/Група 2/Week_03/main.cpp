@@ -1,5 +1,5 @@
 #include <iostream>
-#include "boolvector.hpp"
+#include "BoolVector-seminar.hpp"
 
 int main() {
 	BoolVector v(16);

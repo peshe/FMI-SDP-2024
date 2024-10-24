@@ -36,7 +36,7 @@ int main()
     }
 
     // XXX: вместо ръчна деалокация преди всеки `return`, за предпочитане е да се опакова върнатият указател в `std::unique_ptr` обект, който да гарантира, че паметта, заделена за масива, ще се освободи
-    int *a = new int[n];
+    auto *a = new int[n];
     for (unsigned int i = 0; i < n; i++)
     {
         std::cin >> a[i];
@@ -57,7 +57,7 @@ int main()
         return 4;
     }
 
-    std::cout << binary_search(a, n, x);
+    std::cout << binary_search(a, n, x) << std::endl;
 
     delete[] a;
 
