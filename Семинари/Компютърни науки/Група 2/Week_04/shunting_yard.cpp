@@ -14,7 +14,7 @@ int getPrecedence(char c) {
 
 		case '(': return 0;
 		case ')': return 0;
-		default: throw std::runtime_error("bad");
+		default: throw std::runtime_error("bad operation");
 	}
 }
 
@@ -36,7 +36,7 @@ double (*getFunction(char c))(double, double) {
 
 		case '(': return nullptr;
 		case ')': return nullptr;
-		default: throw std::runtime_error("bad");
+		default: throw std::runtime_error("bad operation");
 	}
 }
 
@@ -44,9 +44,17 @@ std::string shuntingYard(const std::string &expression) {
 	std::string		 out;
 	std::stack<char> s;
 
-	for (char c : expression) {
+	for (std::size_t i = 0; i < expression.size(); ++i) {
+		char c = expression[i];
 		if (std::isdigit(c)) {
-			out += c;
+			
+			// адаптация за да работи с многоцифрени числа
+			while(std::isdigit(expression[i])) {
+				out += expression[i];
+				++i;
+			}
+			--i;
+			out += ' ';
 			continue;
 		}
 
@@ -86,8 +94,17 @@ std::string shuntingYard(const std::string &expression) {
 double evalRPN(const std::string &expression) {
 	std::stack<double> s;
 
-	for (char c : expression) {
-		if (std::isdigit(c)) { s.push(c - '0'); }
+	for (std::size_t i = 0; i < expression.size(); ++i) {
+		char c = expression[i];
+		if (std::isdigit(c)) {
+			int num = 0;
+			while(std::isdigit(expression[i])) {
+				num *= 10;
+				num += expression[i] - '0';
+				++i;
+			}
+			s.push(num); 
+		}
 
 		if (isOp(c)) {
 			double right = s.top();
@@ -102,7 +119,7 @@ double evalRPN(const std::string &expression) {
 }
 
 int main() {
-	auto rpn = shuntingYard("3 + 4 * 2 / (1 - 5) ^ 2 ^ 3");
+	auto rpn = shuntingYard("32 + 40 * 2 / (10 - 13) ^ 2 ^ 3");
 
 	std::cout << rpn << std::endl;
 

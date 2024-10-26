@@ -29,6 +29,7 @@ bool checkBraces(const std::string &str) {
 		if (isOpenBrace(c)) { stack.push(getBraceType(c)); }
 		if (isClosingBrace(c)) {
 			if (!stack.empty() && stack.top() == getBraceType(c)) { stack.pop(); }
+			if(stack.empty()) return false; // forgot it earlier
 		}
 	}
 	return stack.empty();
