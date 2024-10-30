@@ -7,6 +7,7 @@ class BoolVector {
 	BoolVector() : Size(0), Arr(0) {}
 	BoolVector(int size) : Size(size), Arr((size + 7) >> 3) {}
 
+
 	class BoolVectorProxy {
 		uint8_t *source;
 		uint8_t	 position;	   // 0...7
@@ -22,6 +23,11 @@ class BoolVector {
 
 		operator bool() const { return (*source & (1 << position)) >> position; }
 	};
+
+	using value_type = bool;
+	using reference = BoolVectorProxy;
+	using const_reference = const BoolVectorProxy;
+	using size_type = std::size_t;
 
 	void push_back(bool b) {
 		if (Size >= 8 * Arr.size()) { Arr.push_back(0); }
@@ -45,6 +51,10 @@ class BoolVector {
 		result += other;
 		return result;
 	}
+
+	BoolVectorProxy back() { return (*this)[Size-1];}
+	const BoolVectorProxy back() const { return (*this)[Size-1];}
+	bool empty() const { return Size == 0;}
 
    private:
 	std::size_t			 Size;
