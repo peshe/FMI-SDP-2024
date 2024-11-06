@@ -12,12 +12,12 @@ class Queue{
             sBack.pop();
         }
     }
-    bool needsMoving(){
+    bool needsMoving()const{
         return sFront.empty() && !sBack.empty();
     }
 
     public:
-    bool isEmpty(){
+    bool isEmpty()const{
         return sFront.empty() && sBack.empty();
     }
     void enqueue(const T& el){
@@ -28,7 +28,7 @@ class Queue{
         sFront.pop();
         return temp;
     }
-    T& front(){
+    T& front()const{
         if(isEmpty()){
                 throw std::underflow_error("There are no items in the queue");
         }    
@@ -36,7 +36,7 @@ class Queue{
             moveItems();
         return sFront.top();
     }
-    size_t size(){
+    size_t size()const{
         return sFront.size() + sBack.size();
     }
 };

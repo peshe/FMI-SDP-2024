@@ -21,13 +21,13 @@ class MinQueue{
         data.pop();
         return temp;
     };
-    int front(){
+    int front()const{
         return data.front();
     };
-    bool empty(){
+    bool empty()const{
         return data.empty();
     };
-    int getMin(){
+    int getMin()const{
         return minQ.front();
     };
 };

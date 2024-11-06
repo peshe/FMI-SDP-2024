@@ -74,10 +74,10 @@ class Dequeue{
         return sFront.top();
 
     }
-    bool empty(){
+    bool empty()const{
         return sFront.empty() && sBack.empty();
     }
-    int getOperations(){
+    int getOperations()const{
         return operations;
     }
 };

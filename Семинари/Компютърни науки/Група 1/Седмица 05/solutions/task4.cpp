@@ -15,17 +15,17 @@ class QueueWithHistory{
     };
     stack<Operation> undo,redo;
     deque<T> q;
-    
+
     void clearRedo(){
         while(!redo.empty())
             redo.pop();
     }
 
     public:
-    T& front(){
+    T& front()const{
         return q.front();
     }
-    bool empty(){
+    bool empty()const{
         return q.empty();
     }
     void enqueue(const T& el){

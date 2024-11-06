@@ -6,7 +6,7 @@ template <typename T>
 class PriorityQueue{
     const size_t P;
     queue<T>* data;
-    queue<T>* getHightestPriority(){
+    queue<T>* getHightestPriority()const{
         int index = P-1;
         while(data[index].empty())
             index--;
@@ -16,7 +16,7 @@ class PriorityQueue{
     }
     public:
     PriorityQueue(size_t priorities = 1):P(priorities),data(new queue<T>[priorities]){};
-    bool isEmpty(){
+    bool isEmpty()const{
         return getHightestPriority() == nullptr;
     }
     void enqueue(const T& el, size_t priority){
@@ -34,7 +34,7 @@ class PriorityQueue{
         
         return temp;
     }
-    T& front(){
+    T& front()const{
         queue<T>* it = getHightestPriority();
         if(!it)
             throw underflow_error("The queue is empty");
