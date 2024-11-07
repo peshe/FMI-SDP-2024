@@ -417,7 +417,7 @@ inline void LList<T>::append(LList other)
     else {
         head = other.head;
     }
-    tail = other.head;
+    tail = other.tail;
     sz += other.sz;
     other.head = other.tail = nullptr;
 }
@@ -627,6 +627,8 @@ inline void LList<T>::filter(const Func& predicate)
             --sz;
         }
     }
+	delete toDelete;
+	current->next = nullptr;
     if (sz) {
         head = dummy.next;
         tail = current;
