@@ -16,13 +16,13 @@ class StackMin{
         if(val == min.top())
             min.pop();
     }
-    int top(){
+    int top()const{
         return numbers.top();
     }
-    bool empty(){
+    bool empty()const{
         return numbers.empty();
     }
-    int getMin(){
+    int getMin()const{
         return min.top();
     }
 };
