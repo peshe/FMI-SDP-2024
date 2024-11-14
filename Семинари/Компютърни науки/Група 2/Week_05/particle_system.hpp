@@ -11,7 +11,7 @@ class ParticleSystem : public Serializable {
    public:
 	using Id = std::size_t;
 
-	ParticleSystem(std::size_t size) : elements(), empty() {
+	ParticleSystem(std::size_t size = 0) : elements(), empty() {
 		for(std::size_t i = 0; i < size; ++i) {
 			elements.push_back({T(), false});
 			empty.push(i);
