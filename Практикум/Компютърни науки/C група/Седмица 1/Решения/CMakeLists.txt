@@ -4,7 +4,7 @@ project(week1)
 
 set(CMAKE_CXX_STANDARD 20)
 
-set(TARGETS 1_factorial 2_fibonacci 3_binary_search 4_permutations 5_lcs 6_power_set)
+set(TARGETS 1_factorial 2_fibonacci 3_binary_search 4_permutations 5_lcs 6_power_set 7_letter_combinations 8_binary_watch 9_word_search)
 
 foreach(target ${TARGETS})
     add_executable(${target} ${target}.cpp)
