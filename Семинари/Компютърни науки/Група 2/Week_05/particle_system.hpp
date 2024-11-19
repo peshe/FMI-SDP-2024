@@ -9,7 +9,22 @@ template <class T>
 class ParticleSystem : public Serializable {
    private:
    public:
-	using Id = unsigned int;
+	using Id = std::size_t;
+
+	ParticleSystem(std::size_t size = 0) : elements(), empty() {
+		for(std::size_t i = 0; i < size; ++i) {
+			elements.push_back({T(), false});
+			empty.push(i);
+		}
+	}
+	
+	std::size_t size() {
+		return elements.size() - empty.size();
+	}
+
+	std::size_t capacity() {
+		return elements.size();
+	}
 
 	Id add(const T &el) {
 		if (!empty.empty()) {
@@ -24,11 +39,14 @@ class ParticleSystem : public Serializable {
 	}
 
 	void remove(Id id) {
+		if (id >= elements.size()) throw std::invalid_argument("invalid id");
+		if (!elements[id].valid) { throw std::invalid_argument("invalid id"); }
 		empty.push(id);
 		elements[id].valid = false;
 	}
 
 	T &operator[](Id id) {
+		if (id >= elements.size()) throw std::invalid_argument("invalid id");
 		if (!elements[id].valid) { throw std::invalid_argument("invalid id"); }
 		return elements[id].value;
 	}
@@ -42,7 +60,7 @@ class ParticleSystem : public Serializable {
 		Iterator(C &container, Id id) : container(container), id(id) {}
 
 		Iterator &operator++() {
-			if(id >= container.elements.size()) return *this;
+			if (id >= container.elements.size()) return *this;
 			do {
 				++this->id;
 			} while (id < container.elements.size() && !container.elements[id].valid);
@@ -79,10 +97,10 @@ class ParticleSystem : public Serializable {
 
 	void serialize(std::ostream &out) {
 		std::size_t size = elements.size();
-		out.write((char*)&size, sizeof(size));
+		out.write((char *)&size, sizeof(size));
 		for (auto &[value, valid] : elements) {
 			value.serialize(out);
-			out.write((char*)&valid, sizeof(valid));
+			out.write((char *)&valid, sizeof(valid));
 		}
 	}
 
@@ -93,16 +111,16 @@ class ParticleSystem : public Serializable {
 			empty.swap(cleared);
 		}
 		std::size_t size;
-		in.read((char*) &size, sizeof(size));
-		for(std::size_t i = 0; i < size; ++i) {
+		in.read((char *)&size, sizeof(size));
+		for (std::size_t i = 0; i < size; ++i) {
 			elements.push_back({T(), false});
 			auto &[value, valid] = elements.back();
 			value.deserialize(in);
-			in.read((char*)&valid, sizeof(valid));
+			in.read((char *)&valid, sizeof(valid));
 		}
 	}
 
-   private:
+   protected:
 	struct ElementData {
 		T	 value;
 		bool valid;
