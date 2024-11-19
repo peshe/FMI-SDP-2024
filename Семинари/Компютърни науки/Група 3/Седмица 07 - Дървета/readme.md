@@ -76,7 +76,7 @@ struct TreeNode {
 
 - void add_subtree(const Tree& subtree) - добавя ново поддърво към корена на текущото дърво;
 - const T& root() const - връща стойността в корена на дървото;
-- bool empty() const - проверява дали дървото е празно;
+- bool leaf() const - проверява дали дървото е празно;
 - void dfs() const - обхожда дървото по метода на търсене в дълбочина;
 - void bfs() const - обхожда дървото по метода на търсене в ширина;
 - bool contains(const T& data) const - проверява дали даден елемент се среща като връх в дървото.
