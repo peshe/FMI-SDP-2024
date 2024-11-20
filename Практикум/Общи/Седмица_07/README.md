@@ -8,17 +8,17 @@
 
 ### Задача 1
 
-Реализирайте функция `void printLeftParentRight(const Node<Т>* btree)`, която по подаден корен на двоично дърво `btree` принтира елементите му в ред ляво дете - родител - дясно дете.
+Реализирайте функция `void printLeftParentRight(const Node<T>* btree)`, която по подаден корен на двоично дърво `btree` принтира елементите му в ред ляво дете - родител - дясно дете.
 
 ```cpp
 Вход:
-Node<int> *btree = new Node<int>*(1,
-                               new Node<int>*(2,
-                                              new Node<int>*(3),
-                                              new Node<int>*(4)),
-                               new Node<int>*(5,
-                                              new Node<int>*(6),
-                                              new Node<int>*(7)));
+Node<int> *btree = new Node<int>(1,
+                               new Node<int>(2,
+                                              new Node<int>(3),
+                                              new Node<int>(4)),
+                               new Node<int>(5,
+                                              new Node<int>(6),
+                                              new Node<int>(7)));
 
 Изход:
 3 2 4 1 6 5 7
@@ -26,17 +26,17 @@ Node<int> *btree = new Node<int>*(1,
 
 ### Задача 2
 
-Да се напише функция `std::size_t findNodesNumber(Node<Т> *btree)`, която по подаден корен на двоично дърво преброява колко възела има в дървото.
+Да се напише функция `std::size_t findNodesNumber(Node<T> *btree)`, която по подаден корен на двоично дърво преброява колко възела има в дървото.
 
 ```cpp
 Вход:
-Node<int> *btree = new Node<int>*(1,
-                               new Node<int>*(2,
-                                              new Node<int>*(3),
-                                              new Node<int>*(4)),
-                               new Node<int>*(5,
-                                              new Node<int>*(6),
-                                              new Node<int>*(7)));
+Node<int> *btree = new Node<int>(1,
+                               new Node<int>(2,
+                                              new Node<int>(3),
+                                              new Node<int>(4)),
+                               new Node<int>(5,
+                                              new Node<int>(6),
+                                              new Node<int>(7)));
 
 Изход:
 7
@@ -44,7 +44,8 @@ Node<int> *btree = new Node<int>*(1,
 
 ### Задача 3
 
-Да се напише функция  
+Да се напише функция
+
 ```cpp
 template <typename Type, typename Result>
 Result accumulateBTree(
@@ -54,17 +55,18 @@ Result accumulateBTree(
     const Result& initialValue
 )
 ```
+
 , която по подаден корен на двоично дърво, трансформираща стойността на възела функция, акумулираща функция и начална стойност(неутрална спрямо акумулиращата функция) връща получения резултат за цялото дърво.
 
 ```cpp
 Пример:
-Node<int> *btree = new Node<int>*(1,
-                               new Node<int>*(2,
-                                              new Node<int>*(3),
-                                              new Node<int>*(4)),
-                               new Node<int>*(5,
-                                              new Node<int>*(6),
-                                              new Node<int>*(7)));
+Node<int> *btree = new Node<int>(1,
+                               new Node<int>(2,
+                                              new Node<int>(3),
+                                              new Node<int>(4)),
+                               new Node<int>(5,
+                                              new Node<int>(6),
+                                              new Node<int>(7)));
 std::function<int(const int&)> squareFn = [] (const int& value) -> int { return value * value; };
 std::function<int(const int&, const int&)> sumFn = [] (const int& value1, const int& value2) -> int { return value1 + value2; };
 
@@ -77,13 +79,13 @@ std::cout << accumulateBTree<int, int>(btree, squareFn, sumFn, 0) << std::endl;
 
 ### Задача 4
 
-Да се дефинира функция `Node<unsigned int>* generateBTree(unsigned int n)`, която по подадено естествено число `n` връща указател към двоично дърво съставено с естествените числа от `1` до `n` във възлите. Ако на функцията се подаде аргумент `0`, нека да се върне `nullptr`. 
+Да се дефинира функция `Node<unsigned int>* generateBTree(unsigned int n)`, която по подадено естествено число `n` връща указател към двоично дърво съставено с естествените числа от `1` до `n` във възлите. Ако на функцията се подаде аргумент `0`, нека да се върне `nullptr`.
 
 ```cpp
 Вход:
 9
 Тестване на функцията:
-Node<int> *btree = generateBTree(9);
+Node<unsigned int> *btree = generateBTree(9);
 printLeftParentRight(btree);
 
 Изход:
@@ -105,16 +107,16 @@ printLeftParentRight(btree);
 
 ```cpp
 Пример:
-NodeBTree<int> *btree = new NodeBTree<int>*(1,
-                               new NodeBTree<int>*(2,
-                                              new NodeBTree<int>*(3),
-                                              new NodeBTree<int>*(4)),
-                               new NodeBTree<int>*(5,
-                                              new NodeBTree<int>*(6),
-                                              new NodeBTree<int>*(7)));
+NodeBTree<int> *btree = new NodeBTree<int>(1,
+                               new NodeBTree<int>(2,
+                                              new NodeBTree<int>(3),
+                                              new NodeBTree<int>(4)),
+                               new NodeBTree<int>(5,
+                                              new NodeBTree<int>(6),
+                                              new NodeBTree<int>(7)));
 std::function<bool(const int&)> pred = [] (const int& val) -> bool { return val % 2 == 0; };
 
-NodeList<int>* filtered = filterBTreeToList(btree, pred);
+NodeList<int> filtered = filterBTreeToList(btree, pred);
 print(filtered);
 
 Изход:
@@ -122,18 +124,19 @@ print(filtered);
 ```
 
 ### Задача 6
-Напишете функция `void printFloors(const Node<T> *btree)`, която принтира двоично дърво по етажи.  
+
+Напишете функция `void printFloors(const NodeBTree<T> *btree)`, която принтира двоично дърво по етажи.  
 Допълнение: Помислете и реализирайте функция, която отново получава корен на двоично дърво и му сортира етажите(приемете, че има дефиниран оператор `<` за типа `T`).
 
 ```cpp
 Пример:
-NodeBTree<int> *btree = new NodeBTree<int>*(1,
-                               new NodeBTree<int>*(2,
-                                              new NodeBTree<int>*(3),
-                                              new NodeBTree<int>*(4)),
-                               new NodeBTree<int>*(5,
-                                              new NodeBTree<int>*(6),
-                                              new NodeBTree<int>*(7)));
+NodeBTree<int> *btree = new NodeBTree<int>(1,
+                               new NodeBTree<int>(2,
+                                              new NodeBTree<int>(3),
+                                              new NodeBTree<int>(4)),
+                               new NodeBTree<int>(5,
+                                              new NodeBTree<int>(6),
+                                              new NodeBTree<int>(7)));
 printFloors(btree);
 
 Изход:
