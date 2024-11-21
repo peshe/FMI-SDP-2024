@@ -14,11 +14,7 @@ int main(){
     t.insertElAt({3},8);
     t.insertElAt({1},4);
     t.insertElAt({1,1},15);
-    // t2 = std::move(t);
     // t.insertElAt({},10);
     t.print();
     cout<<t.levelSum(4)<<endl;
-    // cout<<t.isLevelPrime(3);
-    // cout<<"-------------------------\n";
-    // t2.print();
 }

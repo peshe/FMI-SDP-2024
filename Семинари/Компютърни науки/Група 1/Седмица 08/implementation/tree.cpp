@@ -80,6 +80,7 @@ void Tree::formatedPrint(Node* curr,int depth,bool last, std::string& prefix)con
 }
 
 size_t Tree::count()const{
+    //To be implemented
     return 0;
 }
 size_t Tree::depth()const{
@@ -97,10 +98,12 @@ size_t Tree::depthUtil(Node *curr) const
 }
 size_t Tree::countOnLevel(size_t depth) const
 {
+    //To be implemented
     return 0;
 }
 
 void Tree::insertTreeAt(const vector<size_t>& position, Tree& other){
+    //To be implemented
 
 }
 
