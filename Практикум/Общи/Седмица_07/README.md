@@ -4,7 +4,7 @@
 
 ### Задача 0
 
-Модифицирайте дадения клас [`Node`](../Седмица_05/solutions/Node.h) от предходната седмица, така че той да представя възел от двоично дърво.
+Модифицирайте дадения клас [`Node`](../Седмица_05/solutions/Node.h) от по-предната седмица, така че той да представя възел от двоично дърво. Не е нужно да имплементирате всичките му методи.
 
 ### Задача 1
 
@@ -79,11 +79,12 @@ std::cout << accumulateBTree<int, int>(btree, squareFn, sumFn, 0) << std::endl;
 
 ### Задача 4
 
-Да се дефинира функция `Node<unsigned int>* generateBTree(unsigned int n)`, която по подадено естествено число `n` връща указател към двоично дърво съставено с естествените числа от `1` до `n` във възлите. Ако на функцията се подаде аргумент `0`, нека да се върне `nullptr`.
+Да се дефинира функция `Node<unsigned int>* generateBTree(unsigned int n)`, която по подадено естествено число `n` връща указател към двоично дърво, съставено от естествените числа от `1` до `n` по възлите. Ако на функцията се подаде аргумент `0`, нека да се върне `nullptr`. За точния начин на генериране вижте следния пример:
 
 ```cpp
 Вход:
 9
+
 Тестване на функцията:
 Node<unsigned int> *btree = generateBTree(9);
 printLeftParentRight(btree);
@@ -103,7 +104,8 @@ printLeftParentRight(btree);
 
 ### Задача 5
 
-Напишете функция `NodeList<T>* filterBTreeToList(const NodeBTree<T>* btree, const std::function<bool(const T&)>& pred)`, която приема корен на двоично дърво и предикат и връща главата на едносвързан списък, в който са сложени(копирани) всички елементи на дървото, отговарящи на предиката. Редът на елементите в списъка(начинът на обикаляне на дървото) не е от значение.
+Напишете функция `NodeList<T>* filterBTreeToList(const NodeBTree<T>* btree, const std::function<bool(const T&)>& pred)`, която приема корен на двоично дърво и предикат и връща главата на едносвързан списък, в който са сложени (копирани) всички елементи на дървото, отговарящи на предиката. Редът на елементите в списъка (начинът на обикаляне на дървото) не е от значение.
+Забележка: `template <typename T> using NodeBTree = Node<T>;`, след което вземете отново [`Node`](../Седмица_05/solutions/Node.h) и го прекръстете на `NodeList`.
 
 ```cpp
 Пример:
@@ -116,7 +118,7 @@ NodeBTree<int> *btree = new NodeBTree<int>(1,
                                               new NodeBTree<int>(7)));
 std::function<bool(const int&)> pred = [] (const int& val) -> bool { return val % 2 == 0; };
 
-NodeList<int> filtered = filterBTreeToList(btree, pred);
+NodeList<int> *filtered = filterBTreeToList(btree, pred);
 print(filtered);
 
 Изход:
