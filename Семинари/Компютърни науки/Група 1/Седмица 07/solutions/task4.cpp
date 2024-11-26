@@ -7,43 +7,56 @@ struct MatrixCell{
     MatrixCell* next, *down;
 };
 
-MatrixCell* createMatrix(int arr[][3],size_t n,size_t m){
-    MatrixCell** startPoints = new MatrixCell*[m];
-    MatrixCell** currPoints = new MatrixCell*[m];
-    for(int j=0;j<m;j++)
-        startPoints[j] = nullptr;
+MatrixCell* createMatrix(int** arr,size_t n,size_t m){ //O(n) memory
+    MatrixCell** startPoints = new MatrixCell*[n];
+    MatrixCell* curr,*res;
+
     for(int i=0;i<n;i++){
-        for(int j=0;j<m;j++){
-            if(i==0){
-                startPoints[j] = new MatrixCell{arr[i][j],nullptr,nullptr};
-                currPoints[j] = startPoints[j];
-            }
-            else{
-                currPoints[j]->down = new MatrixCell{arr[i][j],nullptr,nullptr};
-                currPoints[j] = currPoints[j]->down; 
-            }
+        curr = startPoints[i] = new MatrixCell{arr[i][0],nullptr,nullptr};
+        for(int j=1;j<m;j++){
+            curr->next = new MatrixCell{arr[i][j],nullptr,nullptr};
+            curr = curr->next; 
         }
     }
-    for(int j=0;j<m;j++)
-    currPoints[j] = startPoints[j];
-   for(int i=0;i<n;i++){
-        for(int j=0;j<m-1;j++){
-            currPoints[j]->next = currPoints[j+1];
-        }
-        for(int j=0;j<m;j++){
-            currPoints[j] = currPoints[j]->down;
+    res = startPoints[0];
+    for(int i=0;i<m-1;i++){
+        for(int j=0;j<n-1;j++){
+            startPoints[j]->down = startPoints[j+1];
+            startPoints[j] = startPoints[j]->next;
         }
     }
- 
-    MatrixCell* temp = startPoints[0];
     delete[] startPoints;
-    delete[] currPoints;
-    return temp;
+    return res;
 }   
+
+MatrixCell* createMatrix1(int **arr,size_t N,size_t M){ // O(1) memory
+    MatrixCell *begin,*prevRow = nullptr, *currRow,*prev, *curr = new MatrixCell({arr[0][0],nullptr,nullptr});
+    begin = currRow = curr;
+    for(int j = 1; j<M; j++ ){
+        curr->next = new MatrixCell({arr[0][j],nullptr,nullptr});
+        curr = curr->next;
+    }
+    prevRow = currRow;
+    for(int i = 1; i < N; i++ ){
+
+        currRow->down = new MatrixCell({arr[i][0],nullptr,nullptr});
+        currRow = currRow->down;
+        prev = prevRow;
+        curr= currRow;
+        for(int j = 1; j<M; j++ ){
+            curr->next = new MatrixCell({arr[i][j],nullptr,nullptr});
+            prev->down = curr;
+            prev = prev->next;
+            curr = curr->next;
+        }
+        prevRow = currRow;
+    }
+    return begin;
+}
 
 void print(MatrixCell* start){
     MatrixCell* lineStart=start, *curr = start;
-
+    cout<<"------------\n";
     for(int i=0;lineStart;i++){
         curr = lineStart;
         for(int j=0;curr;j++){
@@ -56,11 +69,17 @@ void print(MatrixCell* start){
 }
 
 int main(){
-    int arr[4][3]={
-        {1,2,3},
-        {4,5,6},
-        {7,8,9},
-        {10, 0 ,5}
-    };
-    print(createMatrix(arr,4,3));
+    int N,M;
+    cin>>N>>M;
+
+    int **arr = new int*[N];
+    for(int i = 0; i<N;i++){
+        arr[i] = new int[M];
+        for(int j = 0 ; j< M ; j++)
+            cin>>arr[i][j];
+    }
+    print(createMatrix1(arr,4,3));
+    for(int i = 0; i<N;i++)
+        delete[] arr[i];
+    delete[] arr;
 }
