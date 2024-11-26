@@ -3,6 +3,15 @@
 #include <variant>
 #include <vector>
 #include "../Седмица 04 - Опашка/linked_queue.hpp"
+#include "../Седмица 03 - Стек/linked_stack.hpp"
+
+template <typename T>
+struct ElementWithLevel {
+  T element;
+  std::size_t level;
+
+  ElementWithLevel(const T& element, std::size_t level) : element(element), level(level) {}
+};
 
 template <typename T>
 class Tree {
@@ -127,6 +136,31 @@ public:
     return height(root_node);
   }
 
+  std::vector<T> level(std::size_t index) const {
+    LinkedQueue<ElementWithLevel<TreeNode*>> queue;
+    queue.enqueue({root_node, 0});
+    std::vector<T> result;
+
+    while (!queue.empty()) {
+      ElementWithLevel<TreeNode*> current = queue.dequeue();
+
+      if (current.element) {
+        if (current.level == index) {
+          result.push_back(current.element->data);
+        }
+
+        if (current.level > index) {
+          return result;
+        }
+
+        queue.enqueue({ current.element->left, current.level + 1 });
+        queue.enqueue({ current.element->right, current.level + 1 });
+      }
+    }
+
+    return result;
+  }
+
 private:
   struct TreeNode {
     T data;
@@ -136,6 +170,57 @@ private:
     : data(data), left(left), right(right) {}
   };
 
+public:
+  class Iterator {
+    public:
+      Iterator(TreeNode* node) {
+        windstack(node);
+      }
+
+      T& operator*() {
+        return stack.peek()->data;
+      }
+
+      const T& operator*() const {
+        return stack.peek()->data;
+      }
+
+      Iterator& operator++() {
+        TreeNode* current = stack.pop();
+          
+        if (current->right) {
+          windstack(current->right);
+        }
+
+        return *this;
+      }
+
+      bool operator!=(const Iterator& other) const {
+        return !(stack.empty() && other.stack.empty() ||
+               !stack.empty() && !other.stack.empty() && 
+               stack.peek() == other.stack.peek());
+      }
+
+    private:
+      LinkedStack<TreeNode*> stack;
+
+      void windstack(TreeNode* node) {
+        while (node) {
+          stack.push(node);
+          node = node->left;
+        }
+      } 
+  };
+
+  Iterator begin() const {
+    return Iterator(root_node);
+  }
+
+  Iterator end() const {
+    return Iterator(nullptr);
+  }
+
+private:
   TreeNode* root_node;
 
   TreeNode* copy(const TreeNode* node) {
@@ -224,6 +309,16 @@ int main() {
   std::cout << std::boolalpha << bintree.contains(9) << '\n';
   std::cout << std::boolalpha << bintree.contains(12) << '\n';
   std::cout << bintree.height() << '\n';
+
+  for (int i : bintree.level(3)) {
+    std::cout << i << ' ';
+  }
+  std::cout << '\n';
+
+  for (int i : bintree) {
+    std::cout << i << ' ';
+  }
+  std::cout << '\n';
 
   return 0;
 }
