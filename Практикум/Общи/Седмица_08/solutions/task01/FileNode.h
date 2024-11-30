@@ -2,7 +2,6 @@
 #define _FILE_NODE_H_
 
 #include <string>
-#include <vector>
 
 
 class FileNode
