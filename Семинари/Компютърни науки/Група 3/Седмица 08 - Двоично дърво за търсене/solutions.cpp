@@ -1,8 +1,8 @@
+#include "tree_iterator.hpp"
 #include <complex>
 #include <cstddef>
 #include <iostream>
 #include <optional>
-#include "../Седмица 03 - Стек/linked_stack.hpp"
 
 template <typename K, typename V>
 class BinarySearchTree {
@@ -107,53 +107,12 @@ private:
   };
 
 public:
-  class Iterator {
-    public:
-      Iterator(TreeNode* node) {
-        windstack(node);
-      }
-
-      V& operator*() {
-        return stack.peek()->value;
-      }
-
-      const V& operator*() const {
-        return stack.peek()->value;
-      }
-
-      Iterator& operator++() {
-        TreeNode* current = stack.pop();
-          
-        if (current->right) {
-          windstack(current->right);
-        }
-
-        return *this;
-      }
-
-      bool operator!=(const Iterator& other) const {
-        return !(stack.empty() && other.stack.empty() ||
-               !stack.empty() && !other.stack.empty() && 
-               stack.peek() == other.stack.peek());
-      }
-
-    private:
-      LinkedStack<TreeNode*> stack;
-
-      void windstack(TreeNode* node) {
-        while (node) {
-          stack.push(node);
-          node = node->left;
-        }
-      } 
-  };
-
-  Iterator begin() const {
-    return Iterator(root_node);
+  Iterator<TreeNode, V> begin() const {
+    return Iterator<TreeNode, V>(root_node);
   }
 
-  Iterator end() const {
-    return Iterator(nullptr);
+  Iterator<TreeNode, V> end() const {
+    return Iterator<TreeNode, V>(nullptr);
   }
 
 private:
@@ -221,8 +180,8 @@ int main() {
     std::cout << "not found\n";
   }
 
-  for (int i : tree) {
-    std::cout << i << ' ';
+  for (char c : tree) {
+    std::cout << c << ' ';
   }
   std::cout << '\n';
 
