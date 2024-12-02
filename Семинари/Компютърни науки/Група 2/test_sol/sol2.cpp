@@ -128,7 +128,15 @@ int strangeEval(const char *exp) {
 				}
 			}
 
-			if (std::isdigit(*exp)) { s.push(*exp - '0'); }
+			if (std::isdigit(*exp)) {
+				int num = 0;
+				while(std::isdigit(*exp)) {
+					num = num * 10 + *exp - '0';
+					++exp;
+				}
+				s.push(num);
+				--exp;
+			}
 			if (isOp(*exp)) {
 				if (*exp == '*' || *exp == '/') q[0].push(*exp);
 				if (*exp == '+' || *exp == '-') q[1].push(*exp);
