@@ -5,7 +5,7 @@
 template <class T>
 struct List {
 	T	  data;
-	List *next;
+	List *next = nullptr;
 };
 
 using Interval = std::pair<int, int>;
@@ -84,13 +84,24 @@ List<T> *makeList(int n, std::function<void(T &)> &&f) {
 			f(l->next->data);
 			l = l->next;
 		} catch (...) {
-			if (l->next) delete l->next;
+			freeHeap(dummy.next);
 			throw;
 		}
 	}
 	l->next = nullptr;
 	return dummy.next;
 }
+
+template <class T>
+class List_ptr {
+	List<T> *l;
+
+   public:
+	List_ptr(List<T> *l) : l(l) {}
+	~List_ptr() { freeHeap(l); }
+
+	operator List<T> *() { return l; }
+};
 
 /*
 9
@@ -106,21 +117,18 @@ int main() {
 	int n, k;
 	std::cin >> n;
 
-	List<int> *l = makeList<int>(n, [](int &k) { std::cin >> k; });
+	List_ptr<int> l = makeList<int>(n, [](int &k) { std::cin >> k; });
 
 	std::cin >> k;
-	List<Interval> *intervals = makeList<Interval>(k, [](Interval &k) { std::cin >> k.first >> k.second; });
+	List_ptr<Interval> intervals = makeList<Interval>(k, [](Interval &k) { std::cin >> k.first >> k.second; });
 
-	printList(l);
-	printList(intervals);
+	printList<int>(l);
+	printList<Interval>(intervals);
 
 	std::cout << std::endl;
 
 	sumSublists(l, intervals);
-	printList(l);
-
-	freeHeap(l);
-	freeHeap(intervals);
+	printList<int>(l);
 
 	return 0;
 }

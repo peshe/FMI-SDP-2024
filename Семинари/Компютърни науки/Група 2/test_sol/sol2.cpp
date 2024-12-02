@@ -20,20 +20,15 @@ void freeHeap(List<T> *l) {
 }
 
 template <class T>
-void printList(List<T> *l) {
-	while (l) {
-		std::cout << l->data << " -> ";
-		l = l->next;
-	}
-	std::cout << std::endl;
-}
-
-template <class T>
 class Queue {
 	List<T> *first = nullptr;
 	List<T> *last  = nullptr;
 
    public:
+	Queue()							 = default;
+	Queue &operator=(const Queue &q) = delete;
+	Queue(const Queue &q)			 = delete;
+
 	void push(const T &el) {
 		List<T> *e = new List<T>{el, nullptr};
 
@@ -48,22 +43,15 @@ class Queue {
 	T &front() { return first->data; }
 
 	T pop() {
-		if (!first) throw std::runtime_error("pop empty queue");
-		T el = first->data;
-		if (first == last) {
-			delete first;
-			first = last = nullptr;
-		} else {
-			List<T> *el = first;
-			first		= first->next;
-			delete el;
-		}
-		return el;
+		T		 ret = first->data;
+		List<T> *el	 = first;
+		first		 = first->next;
+		if (last == el) last = nullptr;
+		delete el;
+		return ret;
 	}
 
-	bool empty() { return first == nullptr; }
-
-	void print() { printList(first); }
+	bool empty() const { return first == nullptr; }
 
 	~Queue() { freeHeap(first); }
 };
@@ -73,6 +61,10 @@ class Stack {
 	List<T> *_top = nullptr;
 
    public:
+	Stack()							 = default;
+	Stack &operator=(const Stack &s) = delete;
+	Stack(const Stack &s)			 = delete;
+
 	void push(const T &el) {
 		List<T> *e = new List<T>{el, _top};
 		_top	   = e;
@@ -81,21 +73,14 @@ class Stack {
 	T &top() { return _top->data; }
 
 	T pop() {
-		if (!_top) throw std::runtime_error("pop empty stack");
-		T el = _top->data;
-		if (_top->next == nullptr) {
-			delete _top;
-			_top = nullptr;
-		} else {
-			List<T> *el = _top;
-			_top		= _top->next;
-			delete el;
-		}
-		return el;
+		T		 ret = _top->data;
+		List<T> *el	 = _top;
+		_top		 = _top->next;
+		delete el;
+		return ret;
 	}
 
-	void print() { printList(_top); }
-	bool empty() { return _top == nullptr; }
+	bool empty() const { return _top == nullptr; }
 
 	~Stack() { freeHeap(_top); }
 };
@@ -130,7 +115,7 @@ int strangeEval(const char *exp) {
 
 			if (std::isdigit(*exp)) {
 				int num = 0;
-				while(std::isdigit(*exp)) {
+				while (std::isdigit(*exp)) {
 					num = num * 10 + *exp - '0';
 					++exp;
 				}
@@ -154,6 +139,8 @@ int strangeEval(const char *exp) {
 
 int main() {
 	std::cout << strangeEval("2 3 5 + *") << std::endl;
+	std::cout << strangeEval("2 3 5 * +") << std::endl;
 	std::cout << strangeEval("1 2 3 4 5 6 + + * + * 2 -") << std::endl;
+	std::cout << strangeEval("1 2 3 4 5 6 * * + + + 2 -") << std::endl;
 	return 0;
 }
