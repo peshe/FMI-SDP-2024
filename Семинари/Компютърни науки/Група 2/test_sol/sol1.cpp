@@ -23,7 +23,7 @@ List<T> *getElement(List<T> *l, int n) {
 }
 
 template <class T>
-void freeHeap(List<T> *l) {
+void freeHeap(const List<T> *l) {
 	List<T> *curr;
 	while (l) {
 		curr = l->next;
@@ -52,9 +52,9 @@ void replaceSublist(List<int> *l, const Interval &sublist) {
 	start->next = end;
 }
 
-void sumSublists(List<int> *l, List<Interval> *intervals) {
+void sumSublists(List<int> *l, const List<Interval> *intervals) {
 	while (intervals) {
-		Interval &i = intervals->data;
+		const Interval &i = intervals->data;
 		try {
 			replaceSublist(l, i);
 		} catch (...) {
@@ -66,7 +66,7 @@ void sumSublists(List<int> *l, List<Interval> *intervals) {
 }
 
 template <class T>
-void printList(List<T> *l) {
+void printList(const List<T> *l) {
 	while (l) {
 		std::cout << l->data << " -> ";
 		l = l->next;
@@ -75,7 +75,7 @@ void printList(List<T> *l) {
 }
 
 template <class T>
-List<T> *makeList(int n, std::function<void(T &)> &&f) {
+List<T> *makeList(int n, const std::function<void(T &)> &&f) {
 	List<T>	 dummy;
 	List<T> *l = &dummy;
 	for (int i = 0; i < n; ++i) {
@@ -94,13 +94,14 @@ List<T> *makeList(int n, std::function<void(T &)> &&f) {
 
 template <class T>
 class List_ptr {
-	List<T> *l;
+	List<T> *const l;
 
    public:
 	List_ptr(List<T> *l) : l(l) {}
 	~List_ptr() { freeHeap(l); }
 
 	operator List<T> *() { return l; }
+	operator const List<T> *() const { return l; }
 };
 
 /*
@@ -120,7 +121,7 @@ int main() {
 	List_ptr<int> l = makeList<int>(n, [](int &k) { std::cin >> k; });
 
 	std::cin >> k;
-	List_ptr<Interval> intervals = makeList<Interval>(k, [](Interval &k) { std::cin >> k.first >> k.second; });
+	const List_ptr<Interval> intervals = makeList<Interval>(k, [](Interval &k) { std::cin >> k.first >> k.second; });
 
 	printList<int>(l);
 	printList<Interval>(intervals);
