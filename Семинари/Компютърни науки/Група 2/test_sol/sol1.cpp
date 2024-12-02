@@ -121,4 +121,6 @@ int main() {
 
 	freeHeap(l);
 	freeHeap(intervals);
+
+	return 0;
 }
