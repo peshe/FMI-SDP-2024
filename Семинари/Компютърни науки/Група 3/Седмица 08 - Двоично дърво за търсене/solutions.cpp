@@ -95,6 +95,65 @@ public:
     return is_balanced(root_node);
   }
 
+  void remove(const K& key) {
+    if (!root_node) {
+      return;
+    }
+
+    TreeNode* node = root_node, *parent = nullptr;
+    while (node && node->key != key) {
+      parent = node;
+
+      if (key < node->key) {
+        node = node->left;
+      } else if (key > node->key) {
+        node = node->right;
+      }
+    }
+
+    if (!node) {
+      return;
+    }
+
+    if (!node->left || !node->right) {
+      TreeNode* new_node = nullptr;
+
+      if (node->left) {
+        new_node = node->left;
+      } else if (node->right) {
+        new_node = node->right;
+      }
+
+      if (!parent) {
+        root_node = new_node;
+      } else if (parent->left == node) {
+        parent->left = new_node;
+      } else {
+        parent->right = new_node;
+      }
+
+      delete node;
+      return;
+    }
+
+    TreeNode* successor = node->right, *successor_parent = node;
+    while (successor->left) {
+      successor_parent = successor;
+      successor = successor->left;
+    }
+
+    node->key = successor->key;
+    node->value = successor->value;
+
+    if (successor_parent->left == successor) {
+      successor_parent->left = successor->right;
+    } else {
+      successor_parent->right = successor->right;
+    }
+
+    delete successor;
+  }
+
 private:
   struct TreeNode {
     K key;
@@ -172,29 +231,31 @@ int main() {
 
   tree.insert(9, 'X');
 
-  std::optional<char> value = tree.search(9);
+  tree.remove(12);
 
-  if (value.has_value()) {
-    std::cout << value.value() << '\n';
-  } else {
-    std::cout << "not found\n";
-  }
+  // std::optional<char> value = tree.search(9);
+
+  // if (value.has_value()) {
+  //   std::cout << value.value() << '\n';
+  // } else {
+  //   std::cout << "not found\n";
+  // }
 
   for (char c : tree) {
     std::cout << c << ' ';
   }
   std::cout << '\n';
 
-  std::optional<char> kth_value = tree.kth_element(4);
+  // std::optional<char> kth_value = tree.kth_element(4);
 
-  if (kth_value.has_value()) {
-    std::cout << kth_value.value() << '\n';
-  } else {
-    std::cout << "not found\n";
-  }
+  // if (kth_value.has_value()) {
+  //   std::cout << kth_value.value() << '\n';
+  // } else {
+  //   std::cout << "not found\n";
+  // }
 
-  tree.insert(16, 'Z');
-  std::cout << std::boolalpha << tree.is_balanced() << '\n';
+  // tree.insert(16, 'Z');
+  // std::cout << std::boolalpha << tree.is_balanced() << '\n';
 
-  BinarySearchTree<int, char> copy(tree);
+  // BinarySearchTree<int, char> copy(tree);
 }
