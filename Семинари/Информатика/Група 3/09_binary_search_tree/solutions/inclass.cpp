@@ -15,30 +15,30 @@ class BTSree {
 public:
     BTSree(Node<T>* root) : root(root) {}
 
-    BTSree(const BTree& other) {
-        this->root = BTree::clone(other.root);
+    BTSree(const BSTree& other) {
+        this->root = BSTree::clone(other.root);
     }
 
-    BTree& operator=(const BTree& other) {
+    BSTree& operator=(const BSTree& other) {
         if (this != &other) {
             Node<T>* newRoot = nullptr;
             try
             {
-                newRoot = BTree::clone(other->root);
+                newRoot = BSTree::clone(other->root);
             }
             catch (const std::exception&)
             {
-                BTree::free(newRoot);
+                BSTree::free(newRoot);
             }
-            BTree::free(this->root);
+            BSTree::free(this->root);
             this->root = newRoot;
         }
         return this;
     }
 
 
-    ~BTree() {
-        BTree::free(this->root);
+    ~BSTree() {
+        BSTree::free(this->root);
     }
 
 public:
@@ -51,13 +51,17 @@ public:
         return getMin(this->root);
     }
 
+    const T& max() const {
+        return getMax(this->root);
+    }
+
     void add(const T& data) {
         add(this->root, data);
     }
 
     void printDot() const {
         std::cout << "digraph G {" << std::endl;
-        BTree::printDot(root);
+        BSTree::printDot(root);
         std::cout << "}" << std::endl;
     }
 
@@ -97,7 +101,7 @@ public:
             return 0;
         }
 
-        return 1 + std::max(BTree::getHeight(root->left), BTree::getHeight(root->right));
+        return 1 + std::max(BSTree::getHeight(root->left), BSTree::getHeight(root->right));
     }
 
     bool contains(Node<T>* root, const T& data) const {
@@ -129,7 +133,15 @@ public:
     }
 
     T getMax(Node<T>* root) const {
+        if (!root) {
+            throw std::invalid_argument("Tree is empty!");
+        }
+        
+        while (root->right) {
+            root = root->right;
+        }
 
+        return root->value;
     }
 
     void add(Node<T>*& root, const T& data) {
@@ -224,7 +236,7 @@ private:
         if (!root) {
             return nullptr;
         }
-        return new Node<T>(root->value, BTree::clone(root->left), BTree::clone(root->right));
+        return new Node<T>(root->value, BSTree::clone(root->left), BSTree::clone(root->right));
     }
 
 private:
