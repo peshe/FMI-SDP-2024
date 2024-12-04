@@ -38,7 +38,7 @@
 - Използва оцветяване на върховете -- червени или черни, вместо височината, като има строги правила за подредбата на цветовете;
 - Използва се във вградените структури от стандартната библиотека [`std::set`](https://en.cppreference.com/w/cpp/container/set) и [`std::map`](https://en.cppreference.com/w/cpp/container/map).
 
-![Red-Black Treee](https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Red-black_tree_example_with_NIL.svg/2880px-Red-black_tree_example_with_NIL.svg.png)
+![Red-Black Tree](https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Red-black_tree_example_with_NIL.svg/2880px-Red-black_tree_example_with_NIL.svg.png)
 
 ### B-дърво
 
