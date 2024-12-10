@@ -303,6 +303,7 @@ private:
         return root;
     }
 
+public:
     // DFS (inorder) iterator
 	class Iterator
     {

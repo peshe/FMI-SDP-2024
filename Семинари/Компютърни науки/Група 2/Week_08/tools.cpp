@@ -4,8 +4,12 @@
 class Tool {
 
 public:
-	virtual void print(int indent = 0) = 0;
+	Tool() {}
+	Tool& operator=(const Tool&) = delete;
+	Tool(const Tool&) = delete;
 
+	virtual void print(int indent = 0) = 0;
+	virtual ~Tool() {}
 };
 
 class SingleTool : public Tool {
@@ -43,6 +47,12 @@ public:
 		for(int i = 0; i < indent; i++)
 			std::cout << "\t";
 		std::cout << "}" << std::endl;
+	}
+
+	virtual ~ToolBox() {
+		for (auto tool : tools) {
+			delete tool;
+		}
 	}
 };
 

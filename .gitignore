@@ -1,5 +1,6 @@
 # Editor & IDE caches
 .vscode
+.zed
 compile_commands.json
 .cache/
 
