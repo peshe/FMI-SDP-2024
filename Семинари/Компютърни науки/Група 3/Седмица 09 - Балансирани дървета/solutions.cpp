@@ -29,6 +29,10 @@ public:
     root_node = insert(root_node, key, value);
   }
 
+  void remove(const K& key) {
+    root_node = remove(root_node, key);
+  }
+
   void pretty_print() {
     pretty_print(root_node, "", true);
   }
@@ -98,6 +102,79 @@ private:
     }
 
     return node;
+  }
+
+  TreeNode* remove(TreeNode* node, const K& key) {
+    if (!node) {
+      return node;
+    }
+
+    if (key < node->key) {
+      node->left = remove(node->left, key);
+    } else if (key > node->key) {
+      node->right = remove(node->right, key);
+    } else {
+      if (!node->left || !node->right) {
+        TreeNode* new_node = nullptr;
+
+        if (!node->left) {
+          new_node = node->right;
+        } else {
+          new_node = node->left;
+        }
+
+        if (!new_node) {
+          delete node;
+          node = nullptr;
+        } else {
+          *node = *new_node;
+          delete new_node;
+        }
+      } else {
+        TreeNode* successor = find_successor(node);
+
+        node->key = successor->key;
+        node->value = successor->value;
+
+        node->right = remove(node->right, successor->key);
+      }
+    }
+
+    if (!node) {
+      return node;
+    }
+
+    node->height = 1 + std::max(get_height(node->left), get_height(node->right));
+
+    int balance_factor = get_balance_factor(node);
+
+    if (balance_factor < -1 && get_balance_factor(node->right) < 0) {
+      return rotate_left(node);
+    } else if (balance_factor > 1 && get_balance_factor(node->left) > 0) {
+      return rotate_right(node);
+    } else if (balance_factor < -1 && get_balance_factor(node->right) >= 0) {
+      node->right = rotate_right(node->right);
+      return rotate_left(node);
+    } else if (balance_factor > 1 && get_balance_factor(node->left) <= 0) {
+      node->left = rotate_left(node->left);
+      return rotate_right(node);
+    }
+
+    return node;
+  }
+
+  TreeNode* find_successor(TreeNode* node) {
+    if (!node) {
+      return nullptr;
+    }
+
+    TreeNode* successor = node->right;
+
+    while (successor->left) {
+      successor = successor->left;
+    }
+
+    return successor;
   }
 
   TreeNode* rotate_left(TreeNode* node) const {
@@ -191,12 +268,18 @@ int main() {
 
   tree.pretty_print();
 
-  std::optional<char> value = tree.search(10);
+  std::cout << '\n';
 
-  if (value.has_value()) {
-    std::cout << value.value() << '\n';
-  } else {
-    std::cout << "not found\n";
-  }
+  tree.remove(8);
+
+  tree.pretty_print();
+
+  // std::optional<char> value = tree.search(10);
+
+  // if (value.has_value()) {
+  //   std::cout << value.value() << '\n';
+  // } else {
+  //   std::cout << "not found\n";
+  // }
   return 0;
 }
