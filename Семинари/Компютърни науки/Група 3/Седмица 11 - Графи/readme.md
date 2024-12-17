@@ -151,7 +151,18 @@ bool is_eulerian(const Graph<V>& graph);
 
 ### Пример:
 ```c++
-std::cout << is_eulerian(graph) << '\n'; // -> true
+std::cout << std::boolalpha << is_eulerian(graph) << '\n'; // -> false
+graph.add_vertex(6);
+graph.add_edge(6, 1);
+graph.add_edge(6, 2);
+graph.add_edge(6, 4);
+graph.add_edge(6, 5);
+
+graph.add_edge(1, 6);
+graph.add_edge(2, 6);
+graph.add_edge(4, 6);
+graph.add_edge(5, 6);
+std::cout << std::boolalpha << is_eulerian(graph) << '\n'; // -> true
 ```
 
 ## Задача 06 - Обхождане в дълбочина
