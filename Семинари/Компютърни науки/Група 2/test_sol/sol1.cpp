@@ -1,6 +1,8 @@
+#include <cstdlib>
 #include <functional>
 #include <iostream>
 #include <stdexcept>
+#include <type_traits>
 
 template <class T>
 struct List {
@@ -14,7 +16,7 @@ std::ostream &operator<<(std::ostream &out, const Interval &i) {
 }
 
 template <class T>
-List<T> *getElement(List<T> *l, int n) {
+List<T> *getElement(List<T> *l, unsigned int n) {
 	for (int i = 0; i < n; ++i) {
 		l = l->next;
 		if (!l) throw std::runtime_error("invalid index");
@@ -80,7 +82,7 @@ List<T> *makeList(int n, const std::function<void(T &)> &&f) {
 	List<T> *l = &dummy;
 	for (int i = 0; i < n; ++i) {
 		try {
-			l->next = new (std::nothrow) List<T>();
+			l->next = new List<T>();
 			f(l->next->data);
 			l = l->next;
 		} catch (...) {
@@ -97,6 +99,10 @@ class List_ptr {
 	List<T> *const l;
 
    public:
+
+    List_ptr &operator=(const List_ptr &) = delete;
+    List_ptr(const List_ptr &) = delete;
+
 	List_ptr(List<T> *l) : l(l) {}
 	~List_ptr() { freeHeap(l); }
 
