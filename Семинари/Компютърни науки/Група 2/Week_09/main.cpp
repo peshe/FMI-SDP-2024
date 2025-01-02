@@ -9,7 +9,8 @@ int main() {
 		bst.insert(0);
 		bst.insert(2);
 
-		bst.printGraphic(std::cout);
+		bst.printGraphicDown();
+		bst.printGraphic();
 
 	}
 
@@ -40,14 +41,16 @@ int main() {
 		bst.insert(12);
 		bst.insert(15);
 
-		bst.printGraphic(std::cout);
+		bst.printGraphic();
 		std::cout << "------------------------" << std::endl;
 		bst.remove(13);
-		bst.printGraphic(std::cout);
+		bst.printGraphic();
 
 		bst.rebalance();
 		std::cout << "------------------------" << std::endl;
-		bst.printGraphic(std::cout);
+		bst.printGraphicDown();
+		bst.printGraphic();
+
 
 	}
 }

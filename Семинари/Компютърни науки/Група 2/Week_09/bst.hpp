@@ -15,9 +15,14 @@ class BST {
 	}
 
 	void printTab() { printTab_helper(root, 0); }
-	void printGraphic(std::ostream &out) {
+	void printGraphic(std::ostream &out = std::cout) {
 		bits b;
 		g_show(out, root, b);
+	}
+
+	void printGraphicDown() {
+		std::vector<bool> indent;
+		printGraphicDown_helper(root, indent);
 	}
 
 	bool contains(int value) { return contains_helper(value, root); }
@@ -130,7 +135,7 @@ class BST {
 	using bits = std::vector<bool>;
 	void g_tabs(std::ostream &out, const bits &b) {
 		for (unsigned int i = 1; i < b.size(); ++i) {
-			out << ((b[i - 1] != b[i]) ? " \u2502" : "  "); // │
+			out << ((b[i - 1] != b[i]) ? " \u2502" : "  ");		// │
 		}
 	}
 	void g_show(std::ostream &out, const Node *r, bits &b, const std::string &middle = "") {
@@ -149,5 +154,24 @@ class BST {
 			g_show(out, r->right, b, " \u2514");	 // └
 			b.pop_back();
 		}
+	}
+
+	void printGraphicDown_helper(Node *curr, std::vector<bool> indent, const std::string &prefix = "") {
+		for (int i = 0; i < (int)indent.size() - 1; ++i)
+			std::cout << (indent[i] ? "│" : " ");
+
+		if (!curr) {
+			std::cout << prefix << "*" << std::endl;
+			return;
+		}
+
+		std::cout << prefix << curr->value << std::endl;
+		indent.push_back(true);
+		printGraphicDown_helper(curr->left, indent, "├");
+		indent.pop_back();
+
+		indent.push_back(false);
+		printGraphicDown_helper(curr->right, indent, "└");
+		indent.pop_back();
 	}
 };
