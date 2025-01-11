@@ -29,8 +29,8 @@ int main() {
 	std::ofstream os2("after.txt");
 	t.writeDot(os2);
 
-	/*
-		dot -Tsvg before.txt > after.svg
+	/* // graphviz
+		dot -Tsvg before.txt > before.svg
 		dot -Tsvg after.txt > after.svg
 		firefox before.svg
 		firefox after.svg

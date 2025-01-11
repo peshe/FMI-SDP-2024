@@ -4,7 +4,7 @@
 
 int main() {
 	
-	std::unique_ptr<Graph> g = std::make_unique<MatrixGraph>(10);
+	std::unique_ptr<Graph> g = std::make_unique<EdgeGraph>(10);
 	g->addEdge({1,2});
 	g->addEdge({2,3});
 	g->addEdge({3,4});
@@ -13,7 +13,7 @@ int main() {
 	g->addEdge({5,6});
 	
 	std::cout << "neighbours of 4" << std::endl;
-	g->forNeighbours(4, [](Graph::Vertex &v) { std::cout << v << " "; });
+	g->forNeighbours(4, [](const Graph::Vertex &v) { std::cout << v << " "; });
 	std::cout << std::endl;
 
 	std::cout << "dfs from 4" << std::endl;
@@ -23,9 +23,6 @@ int main() {
 	std::cout << "bfs from 4" << std::endl;
 	g->bfs(4, [](Graph::Vertex &v) { std::cout << v << " "; });
 	std::cout << std::endl;
-	
 
-
-
-	
+	return 0;
 }
