@@ -1,6 +1,8 @@
+#include <functional>
 #include <stdexcept>
 #include <string>
-#include <vector>
+#include <ostream>
+#include <format>
 
 class Trie {
    public:
@@ -17,7 +19,40 @@ class Trie {
 
 	static const int A_SIZE = 26;
 	void			 insert(const std::string &word) { insertH(&root, word.data()); }
-	void			 remove(const std::string &word);
+	void			 remove(const std::string &word) {
+		std::string myword = find(word);
+
+		Node *lastKeep = &root;
+		char  key		= myword[0];
+		Node *final		= iterate(&root, myword.data(), [&lastKeep, &key](Node *curr, char a) {
+			if (curr->isFinal || curr->childrenCount > 1) {
+				lastKeep = curr;
+				key		  = a;
+			}
+		});
+
+		if (!final || !final->isFinal) return;
+		final->isFinal = false;
+		if (final->childrenCount == 0) {
+			lastKeep->childrenCount--;
+			free(lastKeep->next[key - 'a']);
+			lastKeep->next[key - 'a'] = nullptr;
+		}
+	}
+
+	void writeDot(std::ostream &out) {
+		out << "digraph {rankdir=\"LR\"";
+		dfs(&root, [&out](Node *curr, char c) {
+			out << std::format("\"{}\" [label={}, shape={}]", (void *)curr, c,
+							   curr->isFinal ? "doublecircle" : "circle")
+				<< std::endl;
+			for (std::size_t i = 0; i < A_SIZE; ++i) {
+				if (curr->next[i]) out << "\"" << curr << "\" -> \"" << curr->next[i] << "\";\n";
+			}
+		});
+
+		out << "}";
+	}
 
 	void print();
 
@@ -59,22 +94,21 @@ class Trie {
 	}
 
 	bool hasBranch(Node *curr) {
-		if(curr->childrenCount == 0) return false;
-		if(curr->childrenCount == 1) {
-			for(int i = 0; i < A_SIZE; ++i) {
-				if(curr->next[i]) {
-					return hasBranch(curr->next[i]);
-				}
+		if (curr->childrenCount == 0) return false;
+		if (curr->childrenCount == 1) {
+			for (int i = 0; i < A_SIZE; ++i) {
+				if (curr->next[i]) { return hasBranch(curr->next[i]); }
 			}
-		} else return true;
+		}
+		return true;
 	}
 
 	std::string getString(Node *curr) {
-		if(curr->childrenCount == 0) return "";
-		if(curr->childrenCount == 1) {
-			for(int i = 0; i < A_SIZE; ++i) {
-				if(curr->next[i]) {
-					std::string a(1,i + 'a');
+		if (curr->childrenCount == 0) return "";
+		if (curr->childrenCount == 1) {
+			for (int i = 0; i < A_SIZE; ++i) {
+				if (curr->next[i]) {
+					std::string a(1, i + 'a');
 					return a + getString(curr->next[i]);
 				}
 			}
@@ -82,18 +116,29 @@ class Trie {
 		throw std::runtime_error("mistake!!!");
 	}
 
-	Node *iterate(Node *curr, const char*word) {
+	Node *iterate(Node *curr, const char *word, const std::function<void(Node *, char)> &f = [](Node *, char) {}) {
 		int index = *word - 'a';
 		if (*word == '\0') { return curr; }
+		f(curr, *word);
 
 		if (!curr->next[index]) return nullptr;
 
-		return iterate(curr->next[index], word + 1);
+		return iterate(curr->next[index], word + 1, f);
 	}
 
-	std::string findH(Node *curr, const char *word) { 
+	void dfs(Node *curr, const std::function<void(Node *, char)> &f = [](Node *, char) {}) {
+		if (!curr) return;
+		for (int i = 0; i < A_SIZE; ++i) {
+			if (curr->next[i]) {
+				f(curr->next[i], i + 'a');
+				dfs(curr->next[i], f);
+			}
+		}
+	}
+
+	std::string findH(Node *curr, const char *word) {
 		Node *end = iterate(curr, word);
-		if(hasBranch(end)) {
+		if (hasBranch(end)) {
 			return "";
 		} else {
 			return std::string(word) + getString(end);

@@ -1,0 +1,23 @@
+10 22
+A B 4
+A H 8
+B C 8
+B H 11
+C D 7
+C F 4
+C I 2
+D E 9
+D F 14
+E F 10
+F G 2
+G H 1
+G I 6
+H I 7
+A C 5
+B D 6
+D H 8
+E I 3
+F H 9
+G B 12
+C G 11
+E H 5

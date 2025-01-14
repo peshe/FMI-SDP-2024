@@ -1,0 +1,10 @@
+7 10
+A D 3
+A E 3
+A A 4
+A C 3
+G C 5
+C B 3
+C F 4
+B F 0
+F G 1
