@@ -175,6 +175,21 @@ class Iterator {
     ++size;
   }
 
+  void remove_at(const Iterator& position) {
+    if (position == begin()) {
+      remove_first();
+    } else if (position == Iterator(last)) {
+      remove_last();
+    } else {
+      Iterator iter = previous(position);
+
+      iter.current->next = position.current->next;
+      position.current->next->prev = iter.current;
+      delete position.current;
+      --size;
+    }
+  }
+
   bool is_palyndrome() const {
     Node *first_it = first, *last_it = last;
     while (first_it != last_it && first_it->prev != last_it && first_it->data == last_it->data) {
@@ -193,6 +208,16 @@ private:
     std::swap(first, other.first);
     std::swap(last, other.last);
     std::swap(size, other.size);
+  }
+
+  Iterator previous(const Iterator& current) {
+    Node* iter = first;
+
+    while (Iterator(iter->next) != current) {
+      iter = iter->next;
+    }
+
+    return Iterator(iter);
   }
 };
 

@@ -1,6 +1,7 @@
 #ifndef LINKED_LIST_HPP
 #define LINKED_LIST_HPP
 
+#include <iostream>
 #include <utility>
 
 template <typename T>
@@ -32,6 +33,10 @@ public:
     }
 
     const T& operator*() const {
+      return current->data;
+    }
+
+    T& operator*() {
       return current->data;
     }
 
@@ -130,7 +135,7 @@ public:
     ++size;
   }
 
-  void remove_first() {
+  void remove_first() {    
     if (size == 1) {
       delete first;
       first = nullptr;
@@ -174,9 +179,8 @@ public:
 
       iter.current->next = position.current->next;
       delete position.current;
+      --size;
     }
-
-    --size;
   }
 
   Iterator begin() const {
